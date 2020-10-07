@@ -12,73 +12,115 @@ URL = 'https://stars.bilkent.edu.tr'
 
 
 def GetPasswordFieldID(url):
-    # get website HTML content to fetch password field xpath
+    """Extracts unique part of xPath for password field. It is needed because 
+        xPath for password field is unique for every request
+
+        id = Password field xPath id
+    """
     res = requests.get(url)
     val = re.search(r'LoginForm-\w+', str(res.content)).group(0)
     split_index = val.find('-')
     id = val[split_index + 1:]
     return id
+    
 
 
 def ExtractVerificationCodeRef(text):
+    """ Extracts verification code reference code for 2-Step verificaiton from email body
+
+        ref_code = Reference code 
+    """
+
+    print('[*] GETTING VERIFICATION CODE REFERENCE CODE...')
     te = re.search(r'reference code \w+', text)
     ref = te.group(0)
     ind = ref.rfind(' ')
-    return ref[ind+1:]
+    ref_code = ref[ind+1:]
+    print(f'[*] REFERENCE CODE IS: {ref_code}')
+    return ref_code
+
 
 def Login(driver, pwd_field_id):
-    # get xpaths for form fields
+    """ Login user with ID and password
+
+        returns verification reference code
+    """
     ID_xPath = '//*[@id="LoginForm_username"]'
     PWD_xPath = f'//*[@id="LoginForm-{pwd_field_id}"]'
     SUBMIT_xPath = '//*[@id="login-form"]/fieldset/div/div[1]/div[3]/button'
 
     VER_xPath = '//*[@id="verifyEmail-form"]/fieldset/div/div[1]/div[1]/div/p[2]'
-    
+
     # pass keys
+    print('[*] ENTERING ID AND PASSWORD...')
     driver.find_element_by_xpath(ID_xPath).send_keys(BILKENT_ID)
     driver.find_element_by_xpath(PWD_xPath).send_keys(PASSWORD)
     driver.find_element_by_xpath(SUBMIT_xPath).click()
 
     time.sleep(1)
-    # get verification code reference
+    # get verification code reference    
     VERIFICATION_CODE_REF = driver.find_element_by_xpath(VER_xPath)
     ref = VERIFICATION_CODE_REF.text
-    
+
     return ExtractVerificationCodeRef(ref)
 
+
 def Verify(driver, verification_code):
+    """ Verify user by using verfication_code        
+    """
     VERF_xPath = '//*[@id="EmailVerifyForm_verifyCode"]'
     BTN_xPath = '//*[@id="verifyEmail-form"]/fieldset/div/div[1]/div[2]/button'
     driver.find_element_by_xpath(VERF_xPath).send_keys(verification_code)
     driver.find_element_by_xpath(BTN_xPath).click()    
 
 def NavToSRS(driver):
-    driver.get(URL)
-    driver.find_element_by_xpath('//*[@id="services"]/li[3]/a').click()  
-    return driver.current_url    
+    """ Navigate to SRS login page
 
-ref_code  = None    
+        returns current page url
+    """
+    try:
+        print(f'[*] OPENNING {URL}, PLEASE WAIT...')
+        driver.get(URL)
+    except Exception as e:
+        print('[*] SOMETHING WENT WRONG! RETRYING...')
+        driver.get(URL)
+
+    print('[*] OPENNING SRS LOGIN PAGE...')
+    driver.find_element_by_xpath('//*[@id="services"]/li[3]/a').click()
+    return driver.current_url
+
+
 def LaunchBrowser():
+    """ Launch browser and log in
+    """
     options = Options()
     options.add_argument('--start-maximized')
-    driver = webdriver.Chrome(options=options)
+    driver = webdriver.Chrome(options=options)    
     try:
         current_url = NavToSRS(driver)
-        # get password field id
-        pwd_field_id = GetPasswordFieldID(current_url)    
-                    
-        ref_code = Login(driver, pwd_field_id)
+        pwd_field_id = GetPasswordFieldID(current_url)        
+        try:                                               
+            ref_code = Login(driver, pwd_field_id)
+        except Exception as e:
+            print('[*] Oops! COUD NOT LOGN, RETRYING...')
+            driver.refresh()
+            pwd_field_id = GetPasswordFieldID(current_url)
+            ref_code = Login(driver, pwd_field_id)
         
-        verification_code = mail.ReadMail(ref_code)     
+        # Get verification code
+        verification_code = mail.ReadMail(ref_code)
         retry = verification_code is None
         while retry:
-            print('[*] Oops! Something went wrong. Retrying...')            
-            verification_code = mail.ReadMail(ref_code)   
+            print('[*] Oops! SOMETHING WENT WRONG, Retrying...')
+            verification_code = mail.ReadMail(ref_code)
             retry = verification_code is None
 
+        print(f'[*] VERIFYING... VEERIFICATION CODE IS: {verification_code}')
         Verify(driver, verification_code)
+        print('[**] SUCCESSFULLY LOGGED IN')
 
         while True:
             pass
+        
     except KeyboardInterrupt:
         print('Exitting....')
