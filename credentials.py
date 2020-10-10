@@ -7,4 +7,3 @@ PASSWORD = '<YOUR-STARS-PASSWORD>'
 ORG_EXT = '<@EMAIL-PROVIDER>'           # i.e. @gmail.com
 EMAIL = '<YOUR-EMAIL-NAME>' + ORG_EXT   # i.e. mo.elhamin
 APP_PWD = '<YOUR-APP-PASSWORD>'         # Gmail app password
-

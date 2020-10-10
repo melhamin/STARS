@@ -5,7 +5,7 @@ import re
 import requests
 import time
 
-import mail_reader as mail
+import mail_reader as mailbox
 from credentials import *
 
 URL = 'https://stars.bilkent.edu.tr'
@@ -31,12 +31,12 @@ def ExtractVerificationCodeRef(text):
         ref_code = Reference code 
     """
 
-    print('[*] GETTING VERIFICATION CODE REFERENCE CODE...')
+    print('[+] GETTING REFERENCE CODE...')
     te = re.search(r'reference code \w+', text)
     ref = te.group(0)
     ind = ref.rfind(' ')
     ref_code = ref[ind+1:]
-    print(f'[*] REFERENCE CODE IS: {ref_code}')
+    print(f'[+] REFERENCE CODE IS: {ref_code}')
     return ref_code
 
 
@@ -52,7 +52,7 @@ def Login(driver, pwd_field_id):
     VER_xPath = '//*[@id="verifyEmail-form"]/fieldset/div/div[1]/div[1]/div/p[2]'
 
     # pass keys
-    print('[*] ENTERING ID AND PASSWORD...')
+    print('[+] ENTERING ID AND PASSWORD...')
     driver.find_element_by_xpath(ID_xPath).send_keys(BILKENT_ID)
     driver.find_element_by_xpath(PWD_xPath).send_keys(PASSWORD)
     driver.find_element_by_xpath(SUBMIT_xPath).click()
@@ -79,13 +79,13 @@ def NavToSRS(driver):
         returns current page url
     """
     try:
-        print(f'[*] OPENNING {URL}, PLEASE WAIT...')
+        print(f'[+] OPENNING {URL}...')
         driver.get(URL)
     except Exception as e:
         print('[*] SOMETHING WENT WRONG! RETRYING...')
         driver.get(URL)
 
-    print('[*] OPENNING SRS LOGIN PAGE...')
+    print('[+] OPENNING SRS LOGIN PAGE...')
     driver.find_element_by_xpath('//*[@id="services"]/li[3]/a').click()
     return driver.current_url
 
@@ -93,6 +93,7 @@ def NavToSRS(driver):
 def LaunchBrowser():
     """ Launch browser and log in
     """
+    print('[+] OPENNING BROWSER...')
     options = Options()
     options.add_argument('--start-maximized')
     driver = webdriver.Chrome(options=options)    
@@ -108,19 +109,18 @@ def LaunchBrowser():
             ref_code = Login(driver, pwd_field_id)
         
         # Get verification code
-        verification_code = mail.ReadMail(ref_code)
-        retry = verification_code is None
+        verification_code = mailbox.ReadMail(ref_code)
+        retry = verification_code is None        
         while retry:
-            print('[*] Oops! SOMETHING WENT WRONG, Retrying...')
-            verification_code = mail.ReadMail(ref_code)
+            print('[*] Oops! SOMETHING WENT WRONG, RETRYING...')
+            verification_code = mailbox.ReadMail(ref_code)
             retry = verification_code is None
-
-        print(f'[*] VERIFYING... VEERIFICATION CODE IS: {verification_code}')
+        
+        print(f'[+] VERIFYING...')
         Verify(driver, verification_code)
-        print('[**] SUCCESSFULLY LOGGED IN')
+        print('[+++] SUCCESSFULLY LOGGED IN')
 
-        while True:
-            pass
+        return driver
         
     except KeyboardInterrupt:
-        print('Exitting....')
+        print('[*] Exitting....')

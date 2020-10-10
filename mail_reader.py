@@ -1,10 +1,7 @@
 import time
 import re
-import smtplib
 import time
 import imaplib
-import email
-import browser as br
 
 from credentials import *
 
@@ -17,19 +14,20 @@ SEARCH_CRITERIA = 'REVERSE DATE'  # Descending(most recent first)
 def Setup():
     """ Connect to the mail server
     """
-    print('[*] CONNECTING TO MAILBOX...')
-    mail = imaplib.IMAP4_SSL(SMTP_SERVER)
-    mail.login(EMAIL, APP_PWD)
-    mail.select(mailbox=MAILBOX, readonly=True)
-    return mail
+    print('[+] CONNECTING TO THE MAILBOX...')
+    mailbox = imaplib.IMAP4_SSL(SMTP_SERVER)
+    mailbox.login(EMAIL, APP_PWD)
+    mailbox.select(mailbox=MAILBOX, readonly=True)    
+    print('[+] CONNECTED TO MAILBOX')
+    return mailbox
 
 
-def GetLatestEmails(mail):
+def GetLatestEmails(mailbox):
     """ Get latest 3 unseen emails with subject as "Secure Login Gateway E-Mail Verification Code"
 
         returns a list of last 3 emails
-    """    
-    type, data = mail.search(None, '(SUBJECT "Secure Login Gateway E-Mail Verification Code")')
+    """        
+    type, data = mailbox.search(None, '(SUBJECT "Secure Login Gateway E-Mail Verification Code")')
     mail_ids = data[0]
     id_list = mail_ids.split()
     end = len(id_list)
@@ -46,17 +44,17 @@ def GetCode(content):
     ind = ref.rfind(' ')    
     return ref[ind+1:]
 
-def ExtractVerificationCode(mail, ids, ref_code):
+def ExtractVerificationCode(mailbox, ids, ref_code):
     """ Searches for reference code in latest 3 emails and extracts verfication code
 
         returns verfication code
     """
     for num in ids:
-        type, data = mail.fetch(num, '(RFC822)')
+        type, data = mailbox.fetch(num, '(RFC822)')
         content = str(data[0][1])        
         contains = ref_code in content        
         if contains:
-            verification_code = GetCode(content)             
+            verification_code = GetCode(content)                                     
             return verification_code
 
 
@@ -65,13 +63,14 @@ def ReadMail(ref_code):
 
         returns verification code
     """
-    try:
+    try:        
         time.sleep(1)
-        mail = Setup()        
-        ids = GetLatestEmails(mail)     
-
-        verification_code = ExtractVerificationCode(mail, ids, ref_code)                                            
-        mail.close()
+        mailbox = Setup()        
+        print(f'[+] GETTING EMAIL WITH REFERENCE CODE: {ref_code}')
+        ids = GetLatestEmails(mailbox)     
+        verification_code = ExtractVerificationCode(mailbox, ids, ref_code)   
+        print(f'[+] VEERIFICATION CODE IS: {verification_code}')                                         
+        mailbox.close()
 
         return verification_code
     except Exception as e:

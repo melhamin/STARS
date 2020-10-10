@@ -1,4 +1,5 @@
 from browser import LaunchBrowser
 
 if __name__ == "__main__":
-    LaunchBrowser()
+    print('[+] LAUNCHING STARS...')
+    drivder = LaunchBrowser()
