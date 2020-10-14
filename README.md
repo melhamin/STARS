@@ -41,5 +41,5 @@ A python script for automating Bilkent University SRS - Student Academic Informa
     ```sh
     python pyinstaller --onefile main.py
     ```
-3. Run the executable
+3. Run the executable created in /dist directory
   
