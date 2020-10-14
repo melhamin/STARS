@@ -3,21 +3,18 @@ import re
 import time
 import imaplib
 
-from credentials import *
+import credentials as creds
 
-SMTP_SERVER = 'imap.gmail.com'
-SMTP_PORT = 993
-MAILBOX = 'inbox'
-SEARCH_CRITERIA = 'REVERSE DATE'  # Descending(most recent first)
+MAILBOX_FOLDER = 'inbox'
 
-
-def Setup():
+def Setup(server, port):
     """ Connect to the mail server
     """
-    print('[+] CONNECTING TO THE MAILBOX...')
-    mailbox = imaplib.IMAP4_SSL(SMTP_SERVER)
-    mailbox.login(EMAIL, APP_PWD)
-    mailbox.select(mailbox=MAILBOX, readonly=True)    
+    print('[+] CONNECTING TO THE MAILBOX...')        
+    mailbox = imaplib.IMAP4_SSL(server, port)    
+    mailbox = imaplib.IMAP4_SSL(server, port)    
+    mailbox.login(creds.EMAIL, creds.APP_PWD)
+    mailbox.select(mailbox=MAILBOX_FOLDER, readonly=True)    
     print('[+] CONNECTED TO MAILBOX')
     return mailbox
 
@@ -58,14 +55,14 @@ def ExtractVerificationCode(mailbox, ids, ref_code):
             return verification_code
 
 
-def ReadMail(ref_code):
+def ReadMail(ref_code, server, port):
     """ Reads mailbox for verfication code
 
         returns verification code
     """
     try:        
         time.sleep(1)
-        mailbox = Setup()        
+        mailbox = Setup(server, port)        
         print(f'[+] GETTING EMAIL WITH REFERENCE CODE: {ref_code}')
         ids = GetLatestEmails(mailbox)     
         verification_code = ExtractVerificationCode(mailbox, ids, ref_code)   

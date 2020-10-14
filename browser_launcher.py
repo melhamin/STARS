@@ -1,15 +1,12 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-
 import re
 import requests
 import time
 
+import browsers as br
 import mail_reader as mailbox
 from credentials import *
 
 URL = 'https://stars.bilkent.edu.tr'
-
 
 def GetPasswordFieldID(url):
     """Extracts unique part of xPath for password field. It is needed because 
@@ -89,31 +86,34 @@ def NavToSRS(driver):
     driver.find_element_by_xpath('//*[@id="services"]/li[3]/a').click()
     return driver.current_url
 
+def InitializeBrowser(browser):
+    if browser == br.FIREFOX:
+        return br.Firefox()
+    elif browser == br.CHROME:
+        return br.Chrome()        
 
-def LaunchBrowser():
+def LaunchBrowser(browser, server, port):
     """ Launch browser and log in
     """
     print('[+] OPENNING BROWSER...')
-    options = Options()
-    options.add_argument('--start-maximized')
-    driver = webdriver.Chrome(options=options)    
+    driver = InitializeBrowser(browser=browser)
     try:
         current_url = NavToSRS(driver)
         pwd_field_id = GetPasswordFieldID(current_url)        
         try:                                               
             ref_code = Login(driver, pwd_field_id)
         except Exception as e:
-            print('[*] Oops! COUD NOT LOGN, RETRYING...')
+            print('[*] Oops! COULD NOT LOGN, RETRYING...')
             driver.refresh()
             pwd_field_id = GetPasswordFieldID(current_url)
             ref_code = Login(driver, pwd_field_id)
         
         # Get verification code
-        verification_code = mailbox.ReadMail(ref_code)
+        verification_code = mailbox.ReadMail(ref_code, server, port)
         retry = verification_code is None        
         while retry:
             print('[*] Oops! SOMETHING WENT WRONG, RETRYING...')
-            verification_code = mailbox.ReadMail(ref_code)
+            verification_code = mailbox.ReadMail(ref_code, server, port)
             retry = verification_code is None
         
         print(f'[+] VERIFYING...')
