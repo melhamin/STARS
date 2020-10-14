@@ -23,14 +23,14 @@ A python script for automating Bilkent University SRS - Student Academic Informa
     - Set browser to be used according to the webdriver you installed
     - Set smtp server and port according to your email provider
 
-4. Add your credentials as stated in [credentials.py]()
+4. Add your credentials as stated in [credentials.py](https://github.com/melhamin/STARS/blob/master/credentials.py)
 
 5. Run and enjoy:
     ```sh
     python main.py
     ```
     
-## Create an executable
+## Create an executable and open STARS by one click
 <details><summary><b>Show instructions</b></summary>
   
 1. Install pyinstaller:
