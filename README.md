@@ -2,7 +2,7 @@
 
 A python script for automating Bilkent University SRS - Student Academic Information Registration System - login process (with 2-Step verification set to email).
 
-## Usage
+## Setup and Usage
 
 1. Install the packages needed:
     ```sh
