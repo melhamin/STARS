@@ -4,15 +4,9 @@ A Python script for automating Bilkent University SRS - Student Academic Informa
 
 ## Setup and Usage
 
-3. Install Python and pip(if not already):           
+1. Install Python and pip(if not already):           
     - [Download and install Python](https://www.python.org/downloads/)
     - [Install pip](https://pypi.org/project/pip/)
-
-1. Install the required packages:
-    - In command prompt/terminal navigate to the STARS folder and run the following command
-    ```sh
-    pip install -r requirements.txt
-    ```    
 
 2. Install webdriver:
     - Follow [this](https://www.selenium.dev/documentation/en/webdriver/driver_requirements/) guide to setup the webdriver according to your browser 
@@ -41,9 +35,29 @@ A Python script for automating Bilkent University SRS - Student Academic Informa
     
 ## Create an executable and open STARS by one click
   
-1. In the command prompt/terminal navigate to the STARS folder and run the following command:
-    ```sh
-    python pyinstaller --onefile main.py
-    ```
-2. Run the executable created in /dist directory
+### Windows 
+   In the command prompt navigate to the STARS folder and run the following command:        
+        
+  ```sh
+   python pyinstaller --onefile main.py --name STARS -i bilkent-logo.ico
+  ```  
+     
+   You can find STARS in dist/ folder
+   
+     
+### Mac            
+   In the terminal navigate to the STARS folder and run the following commands:        
+        
+  ```sh
+   chmod +x mac-installer
+   ./mac-installer   
+  ```  
+     
+   Run STARS!
+
+        
+     
+     
+   
+    
   
