@@ -3,7 +3,7 @@ import requests
 import time
 
 import browsers as br
-from configurations import *
+import configurations as configs
 
 URL = 'https://stars.bilkent.edu.tr'
 
@@ -42,8 +42,16 @@ class Browser:
             xPath for password field is unique in every request
             return: Password field xPath id
         """
-        res = requests.get(url)
-        val = re.search(r'LoginForm-\w+', str(res.content)).group(0)
+        res = requests.get(url)                          
+        val = re.search(r'LoginForm-\w+', str(res.content))
+        retry = val == None
+        while retry:
+            print('retrying....')               
+            res = requests.get(url)                          
+            val = re.search(r'LoginForm-\w+', str(res.content))
+            retry = val == None
+
+        val = val.group(0)
         split_index = val.find('-')
         id = val[split_index + 1:]
         return id
@@ -73,8 +81,8 @@ class Browser:
 
         # pass keys
         print('[+] ENTERING ID AND PASSWORD...')
-        self.driver.find_element_by_xpath(ID_xPath).send_keys(BILKENT_ID)
-        self.driver.find_element_by_xpath(PWD_xPath).send_keys(PASSWORD)
+        self.driver.find_element_by_xpath(ID_xPath).send_keys(configs.BILKENT_ID)
+        self.driver.find_element_by_xpath(PWD_xPath).send_keys(configs.PASSWORD)
         self.driver.find_element_by_xpath(SUBMIT_xPath).click()
 
         time.sleep(1)
@@ -100,8 +108,9 @@ class Browser:
         print('[+] OPENNING BROWSER...')
         # driver = self.InitializeBrowser(browser=browser)
         try:
-            current_url = self.nav_to_srs()
+            current_url = self.nav_to_srs()            
             pwd_field_id = self.get_password_field_id(current_url)        
+            
             try:                                               
                 ref_code = self.login(pwd_field_id)
             except Exception as e:
