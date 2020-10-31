@@ -4,6 +4,8 @@ import time
 import imaplib
 
 import configurations as configs
+import services as services
+
 
 MAILBOX_FOLDER = 'inbox'
 
@@ -16,9 +18,14 @@ class MailBox:
 
     def setup(self):
         """ Connect to the mail server
-        """   
-        print('[+] CONNECTING TO THE MAILBOX...')                
-        mailbox = imaplib.IMAP4_SSL(self.server, self.port)    
+        """           
+        print('[+] CONNECTING TO THE MAILBOX...')  
+        # Remove port number if the email provider is bilkent webmail
+        # Bilkent webmail doesn't word with a port number
+        if(self.server == services.supported_providers['bilkent'][0]):            
+            mailbox = imaplib.IMAP4_SSL(self.server)    
+        else:
+            mailbox = imaplib.IMAP4_SSL(self.server, self.port)    
         mailbox.login(configs.EMAIL, configs.APP_PWD)
         mailbox.select(mailbox=MAILBOX_FOLDER, readonly=True)    
         print('[+] CONNECTED TO THE MAILBOX')
