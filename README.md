@@ -27,18 +27,14 @@ A Python script for automating Bilkent University SRS - Student Academic Informa
     - Type the name of the browser to be used based on the step 2
     - Type the name of your email provider
     ```  
-
-5. Run and enjoy:
-    ```sh
-    python main.py
-    ```
     
 ## Create an executable and open STARS by one click
   
 ### Windows 
-   In the command prompt navigate to the STARS folder and run the following command:        
+   In the command prompt navigate to the STARS folder and run the following commands:        
         
   ```sh
+   python -m pip install -r requirements.txt
    python pyinstaller --onefile main.py --name STARS -i bilkent-logo.ico
   ```  
      
