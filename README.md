@@ -4,7 +4,7 @@ A Python script for automating Bilkent University SRS - Student Academic Informa
 
 ## Setup and Usage
 
-1. Install Python and pip(if not already):           
+1. Install Python(if not already):           
     - [Download and install Python](https://www.python.org/downloads/)    
 
 2. Install webdriver:
