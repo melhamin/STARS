@@ -30,15 +30,11 @@ A Python script for automating Bilkent University SRS - Student Academic Informa
     
 ## Create an executable and open STARS by one click
   
-### Windows 
-   In the command prompt navigate to the STARS folder and run the following commands:        
-        
+### Windows                  
   ```sh
-   python -m pip install -r requirements.txt
-   python pyinstaller --onefile main.py --name STARS -i bilkent-logo.ico
-  ```  
-     
-   You can find STARS in dist/ folder
+  Open windows-installer.bat 
+  ```       
+   Stars executable will be created in the "dist" folder.
    
      
 ### Mac            
