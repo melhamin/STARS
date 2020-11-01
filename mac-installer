@@ -1,12 +1,23 @@
 #!/bin/bash
 
-python3 -m pip --disable-pip-version-check install virtualenv 
+echo '*****************************************************'
+echo '*         INSTALLING STARS...PLEASE WAIT            *'
+echo '*****************************************************'
 
+echo [+] Installing venv...
+python3 -m pip --disable-pip-version-check -q install virtualenv 
+
+echo [+] Creating a venv...
 python3 -m venv venv
-source venv/bin/activate
-python3 -m pip --disable-pip-version-check install -r requirements.txt
 
-pyinstaller --onefile --windowed main.py
+echo [+] Activating venv...
+source venv/bin/activate
+
+echo [+] Installing the required packages...
+python3 -m pip --disable-pip-version-check install -q -r requirements.txt
+
+echo [+] Creating the executable...
+pyinstaller --onefile --windowed --log-level CRITICAL src/main.py
 
 touch STARS
 echo '#!/bin/bash' >> STARS
@@ -16,3 +27,13 @@ echo 'open $DIR/main' >> STARS
 mkdir -p STARS.app/Contents/MacOS
 cp STARS dist/main STARS.app/Contents/MacOS/
 chmod +x STARS.app/Contents/MacOS/STARS
+
+echo [+] Cleaning up...
+rm -r build
+rm -r venv
+rm main.spec
+
+echo '**********************************************************************'
+echo '*  STARS WAS SUCCESSFULY INSTALLED. NOW YOU MAY CLOSE THIS WINDOW.   *'
+echo '**********************************************************************'
+
