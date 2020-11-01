@@ -4,6 +4,14 @@ echo '*****************************************************'
 echo '*         INSTALLING STARS...PLEASE WAIT            *'
 echo '*****************************************************'
 
+
+echo [+] Installing pip...
+python3 -m pip --disable-pip-version-check -q install pip
+
+if [ $? -ne 0 ]; then
+echo [*] FATAL ERROR: IT SEEMS THAT PYHTON IS NOT INSTALLED. INSTALL PYTHON AND RETRY...
+else
+
 echo [+] Installing venv...
 python3 -m pip --disable-pip-version-check -q install virtualenv 
 
@@ -36,4 +44,6 @@ rm main.spec
 echo '**********************************************************************'
 echo '*  STARS WAS SUCCESSFULY INSTALLED. NOW YOU MAY CLOSE THIS WINDOW.   *'
 echo '**********************************************************************'
+
+fi
 
