@@ -9,7 +9,7 @@ python -m pip install --disable-pip-version-check pip
 python -m pip install --disable-pip-version-check virtualenv
 
 IF %ERRORLEVEL% == 9009 (
-    @echo \n[*] ERROR: IT SEEMS THAT PYTHON IS NOT INSTALLED. INSTALL PYTHON AND RETRY...\n
+    @echo [*] ERROR: IT SEEMS THAT PYTHON IS NOT INSTALLED. INSTALL PYTHON AND RETRY...
     GOTO END
 )
 
