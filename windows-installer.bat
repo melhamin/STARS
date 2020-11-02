@@ -15,8 +15,8 @@ IF %ERRORLEVEL% == 9009 (
 
 @echo [+] Creating a new venv...
 python -m venv venv
-@echo [+] Actiating venv...
-cmd /k "cd /d venv\Scripts & activate & cd /d ../../ & @echo [+] Installing the required packages... & pip install --disable-pip-version-check -r requirements.txt & @echo [+] Creating the executable... & pyinstaller --onefile src/main.py -n STARS --icon src/bilkent-logo.ico --log-level ERROR & @echo [+] Cleaning up... & cd /d venv\Scripts & deactivate & cd /d ../../ & rmdir /S /Q build & rmdir /S /Q venv & del STARS.spec & @echo [*] STARS WAS SUCCESSFULY INSTALLED! NOW YOU MAY CLOSE THIS WINDOW."
+@echo [+] Activating venv...
+cmd /k "cd /d venv\Scripts & activate & cd /d ../../ & @echo [+] Installing the required packages... & pip install --disable-pip-version-check -r requirements.txt & @echo [+] Creating the executable... & pyinstaller --onefile src/main.py -n STARS --icon src/bilkent-logo.ico --log-level ERROR & @echo [+] Cleaning up... & cd /d venv\Scripts & deactivate & cd /d ../../ & rmdir /S /Q build & rmdir /S /Q venv & del STARS.spec & cd src & rmdir /S /Q __pycache__ & @echo [*] STARS WAS SUCCESSFULY INSTALLED! NOW YOU MAY CLOSE THIS WINDOW."
 
 :END
 pause

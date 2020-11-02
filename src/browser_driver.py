@@ -8,18 +8,15 @@ import configurations as configs
 URL = 'https://stars.bilkent.edu.tr'
 
 class Browser:        
-    def __init__(self, browser) -> None:
-        self.browser = browser
+    def __init__(self, browser_name) -> None:
+        self.browser_name = browser_name
         self.driver = self.setup_driver()
 
     def setup_driver(self):
         ''' Initialize the browser
             browser: is the name of the browser which is going to be used
         '''
-        if self.browser == br.FIREFOX:
-            return br.Firefox()
-        elif self.browser == br.CHROME:
-            return br.Chrome()  
+        return br.get_browser(self.browser_name)
     
     def nav_to_srs(self):
         """ Navigate to SRS login page

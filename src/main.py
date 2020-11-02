@@ -1,10 +1,9 @@
 import sys
 
-from browser import Browser
+from browser_driver import Browser
 from mailbox import MailBox
 import configurations as configs
 import services as services
-
 
 if __name__ == "__main__":    
     browser = configs.BROWSER
