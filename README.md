@@ -10,7 +10,7 @@ A Python script for automating Bilkent University SRS - Student Academic Informa
     - [Download and install Python](https://www.python.org/downloads/)    
 
 3. Install the webdriver:
-    - If you want to use Safari, run the following command in you terminal:
+    - If you want to use Safari, run the following command in the terminal:
         ```sh
         safaridriver --enable
         ```
