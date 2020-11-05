@@ -2,6 +2,9 @@
 
 A Python script for automating Bilkent University SRS - Student Academic Information Registration System - login process (with 2-Step verification set to email).
 
+<p float="left">   
+  <img src="https://user-images.githubusercontent.com/48331678/98185929-b7ea5600-1f1e-11eb-920f-343eb9f23e68.gif" width="100%" height="50%" alt="flutter chat app instant chat app"/>   
+
 ## Setup and Usage
 
 1. Download or clone the project
