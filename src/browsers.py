@@ -3,10 +3,6 @@ import selenium.webdriver.chrome.options as ChromeOptions
 import selenium.webdriver.firefox.options as FirefoxOptions
 import selenium.webdriver.edge.options as EdgeOptions
 
-CHROME = 'chrome'
-FIREFOX = 'firefox'
-SAFARI = 'safari'
-
 def chrome():
     options = ChromeOptions.Options()
     options.add_argument('--start-maximized')
