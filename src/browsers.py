@@ -1,6 +1,7 @@
 from selenium import webdriver
 import selenium.webdriver.chrome.options as ChromeOptions
 import selenium.webdriver.firefox.options as FirefoxOptions
+import selenium.webdriver.edge.options as EdgeOptions
 
 CHROME = 'chrome'
 FIREFOX = 'firefox'
@@ -22,6 +23,10 @@ def safari():
     driver = webdriver.Safari()
     return driver
 
+def edge():        
+    driver = webdriver.Edge()
+    return driver
+
 def get_browser(name):
     if name == 'chrome':
         return chrome()
@@ -29,3 +34,5 @@ def get_browser(name):
         return firefox()
     elif name == 'safari':
         return safari()
+    elif name == 'edge':
+        return edge()

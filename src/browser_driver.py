@@ -1,5 +1,4 @@
 import re
-import requests
 import time
 
 import browsers as br
@@ -19,8 +18,7 @@ class Browser:
         return br.get_browser(self.browser_name)
     
     def nav_to_srs(self):
-        """ Navigate to SRS login page
-            returns current page url
+        """ Navigate to SRS login page            
         """
         try:
             print(f'[+] OPENNING {URL}...')
@@ -31,27 +29,16 @@ class Browser:
 
         print('[+] OPENNING SRS LOGIN PAGE...')
         # The xPath for SRS 
-        self.driver.find_element_by_xpath('//*[@id="services"]/li[3]/a').click()
-        return self.driver.current_url
+        self.driver.find_element_by_xpath('//*[@id="services"]/li[3]/a').click()        
 
-    def get_password_field_id(self, url):
+    def get_password_field_id(self):
         """Extracts unique part of xPath for password field. It is needed because 
             xPath for password field is unique in every request
-            return: Password field xPath id
-        """
-        res = requests.get(url)                          
-        val = re.search(r'LoginForm-\w+', str(res.content))
-        retry = val == None
-        while retry:
-            print('retrying....')               
-            res = requests.get(url)                          
-            val = re.search(r'LoginForm-\w+', str(res.content))
-            retry = val == None
-
-        val = val.group(0)
-        split_index = val.find('-')
-        id = val[split_index + 1:]
-        return id
+            return: Password field xPath id if found, None otherwise
+        """        
+        page_source = self.driver.page_source
+        matches = re.findall(r'LoginForm-\w+', page_source)
+        return None if len(matches) == 0 else matches[0]    
         
     def extract_reference_code(self, text):
         """ Extracts verification code reference code for 2-Step verificaiton from email body
@@ -66,12 +53,12 @@ class Browser:
         return ref_code
 
 
-    def login(self, pwd_field_id):
+    def login(self):
         """ Login user with ID and password
             return: verification reference code
         """
         ID_xPath = '//*[@id="LoginForm_username"]'
-        PWD_xPath = f'//*[@id="LoginForm-{pwd_field_id}"]'
+        PWD_xPath = f'//*[@id="{self.get_password_field_id()}"]'
         SUBMIT_xPath = '//*[@id="login-form"]/fieldset/div/div[1]/div[3]/button'
 
         VER_xPath = '//*[@id="verifyEmail-form"]/fieldset/div/div[1]/div[1]/div/p[2]'
@@ -105,16 +92,13 @@ class Browser:
         print('[+] OPENNING BROWSER...')
         # driver = self.InitializeBrowser(browser=browser)
         try:
-            current_url = self.nav_to_srs()            
-            pwd_field_id = self.get_password_field_id(current_url)        
-            
+            self.nav_to_srs()                                       
             try:                                               
-                ref_code = self.login(pwd_field_id)
+                ref_code = self.login()
             except Exception as e:
                 print('[*] ERROR: Oops! FAILED TO LOGN, RETRYING...')
-                self.driver.refresh()
-                pwd_field_id = self.get_password_field_id(current_url)
-                ref_code = self.login(pwd_field_id)                       
+                self.driver.refresh()                
+                ref_code = self.login()                       
 
             return ref_code
             

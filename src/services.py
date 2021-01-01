@@ -6,4 +6,4 @@ supported_providers = {
     'outlook': ['outlook.office365.com', 465],
 }
 
-supported_browsers = ['chrome', 'firefox', 'safari']
+supported_browsers = ['chrome', 'firefox', 'safari', 'edge']
